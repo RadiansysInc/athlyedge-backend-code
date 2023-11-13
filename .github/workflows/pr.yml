@@ -1,0 +1,43 @@
+# Check for test cases and successfull builds
+
+name: PR validation & Test cases
+
+on:
+    pull_request:
+        branches: ['main', 'master', 'staging', 'develop']
+
+jobs:
+    njsscan:
+        runs-on: ubuntu-latest
+        name: njsscan check
+        steps:
+            - name: Checkout the code
+              uses: actions/checkout@v2
+            - name: nodejsscan scan
+              id: njsscan
+              uses: ajinabraham/njsscan-action@master
+              with:
+                  args: '.'
+
+    build:
+        runs-on: ubuntu-latest
+        needs: [njsscan]
+        strategy:
+            matrix:
+                node-version: [20.x]
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: npm install build and test
+              run: |
+                  npm i glob rimraf
+                  npm i --only=development
+                  npx prisma generate 
+                  npm run build
+                  npm run test

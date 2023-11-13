@@ -1,0 +1,18 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(120)
+  ISBN      String    @db.VarChar(20)
+  createdAt DateTime  @default(now()) @db.Timestamp
+  updatedAt DateTime  @updatedAt @db.Timestamp
+  deletedAt DateTime? @db.Timestamp
+}

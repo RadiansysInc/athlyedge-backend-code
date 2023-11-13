@@ -1,0 +1,13 @@
+# git
+.git
+node_modules
+
+#IDE
+.vscode
+.idea
+
+# Build files
+dist
+
+# Document
+docs
